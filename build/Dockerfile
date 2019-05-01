@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi7-dev-preview/ubi-minimal:7.6@sha256:a572439e8d7ddced4565e2703c940b13a7a8087807db4b6fbbb9889dbfb731e8
+FROM registry.access.redhat.com/ubi7-dev-preview/ubi-minimal:7.6@sha256:b50ba3aac799c34c9316442d4541f9f9682d7860cf9290c15dfcc459c68c4c3f
 
 ENV OPERATOR=/usr/local/bin/cdays-namespace-poc \
     USER_UID=1001 \
