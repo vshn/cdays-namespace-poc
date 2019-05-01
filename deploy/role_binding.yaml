@@ -9,3 +9,16 @@ roleRef:
   kind: Role
   name: cdays-namespace-poc
   apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cdays-namespace-poc
+subjects:
+- kind: ServiceAccount
+  name: cdays-namespace-poc
+  namespace: srueg-test
+roleRef:
+  kind: ClusterRole
+  name: cdays-namespace-poc
+  apiGroup: rbac.authorization.k8s.io
