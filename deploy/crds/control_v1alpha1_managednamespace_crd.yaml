@@ -9,6 +9,13 @@ spec:
     listKind: ManagedNamespaceList
     plural: managednamespaces
     singular: managednamespace
+    shortNames:
+    - mns
+  additionalPrinterColumns:
+  - name: Description
+    type: string
+    description: The description of the ManagedNamespace
+    JSONPath: .spec.description
   scope: Namespaced
   subresources:
     status: {}
