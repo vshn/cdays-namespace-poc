@@ -39,6 +39,10 @@ func (r *ReconcileManagedNamespace) handle(ctx context.Context, managedNamespace
 	}
 
 	reqLogger.Info("Reconciled: "+string(res), "Namespace.Name", namespace.Name)
+
+	managedNamespace.Status.CreatedNamespace = namespace.UID
+	managedNamespace.Status.Phase = corev1.NamespaceActive
+	if err := r.client.Status().Update(ctx, managedNamespace); err != nil {
 		return err
 	}
 
