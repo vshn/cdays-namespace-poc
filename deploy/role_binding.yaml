@@ -1,24 +1,13 @@
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: cdays-namespace-poc
-subjects:
-- kind: ServiceAccount
-  name: cdays-namespace-poc
-roleRef:
-  kind: Role
-  name: cdays-namespace-poc
-  apiGroup: rbac.authorization.k8s.io
----
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: cdays-namespace-poc
+  name: namespace-operator
 subjects:
 - kind: ServiceAccount
-  name: cdays-namespace-poc
-  namespace: srueg-test
+  name: namespace-operator
+  # Replace this with the namespace the operator is deployed in.
+  namespace: REPLACE_NAMESPACE
 roleRef:
   kind: ClusterRole
-  name: cdays-namespace-poc
+  name: namespace-operator
   apiGroup: rbac.authorization.k8s.io

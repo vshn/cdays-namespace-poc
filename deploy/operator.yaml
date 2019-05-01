@@ -12,7 +12,7 @@ spec:
       labels:
         name: cdays-namespace-poc
     spec:
-      serviceAccountName: cdays-namespace-poc
+      serviceAccountName: namespace-operator
       containers:
         - name: cdays-namespace-poc
           image: docker.io/vshn/cdays:namespace-operator
@@ -21,9 +21,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
+              value: ""
             - name: POD_NAME
               valueFrom:
                 fieldRef:
