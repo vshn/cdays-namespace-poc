@@ -12,9 +12,8 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/vshn/cdays-namespace-poc/pkg/apis/control/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
+	apiruntime "k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
@@ -29,24 +28,20 @@ func (r *ReconcileManagedNamespace) handle(ctx context.Context, managedNamespace
 		return err
 	}
 
-	// Check if this Namespace already exists
-	found := &corev1.Namespace{}
-	err := r.client.Get(ctx, types.NamespacedName{Name: namespace.Name}, found)
-	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Namespace", "Namespace.Name", namespace.Name)
-		err = r.client.Create(ctx, namespace)
-		if err != nil {
-			return err
-		}
-
-		// Namespace created successfully - don't requeue
+	res, err := controllerutil.CreateOrUpdate(ctx, r.client, namespace, controllerutil.MutateFn(func(existing apiruntime.Object) error {
+		ns := existing.(*corev1.Namespace)
+		ns.Annotations["openshift.io/display-name"] = managedNamespace.Spec.Description
 		return nil
-	} else if err != nil {
+	}))
+
+	if err != nil {
 		return err
 	}
 
-	// Namespace already exists - don't requeue
-	reqLogger.Info("Skip reconcile: Namespace already exists", "Namespace.Name", found.Name)
+	reqLogger.Info("Reconciled: "+string(res), "Namespace.Name", namespace.Name)
+		return err
+	}
+
 	return nil
 }
 
