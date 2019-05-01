@@ -1,0 +1,7 @@
+apiVersion: control.appuio.ch/v1alpha1
+kind: ManagedNamespace
+metadata:
+  name: example-managednamespace
+spec:
+  # Add fields here
+  size: 3
