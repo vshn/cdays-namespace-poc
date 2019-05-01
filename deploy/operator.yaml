@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cdays-namespace-poc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cdays-namespace-poc
+  template:
+    metadata:
+      labels:
+        name: cdays-namespace-poc
+    spec:
+      serviceAccountName: cdays-namespace-poc
+      containers:
+        - name: cdays-namespace-poc
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - cdays-namespace-poc
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "cdays-namespace-poc"
