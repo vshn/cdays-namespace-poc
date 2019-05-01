@@ -3,5 +3,4 @@ kind: ManagedNamespace
 metadata:
   name: example-managednamespace
 spec:
-  # Add fields here
-  size: 3
+  description: This is the first test project
