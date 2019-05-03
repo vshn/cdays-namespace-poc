@@ -8,13 +8,14 @@ package managednamespace
 
 import (
 	"context"
-	"time"
 
 	controlv1alpha1 "github.com/vshn/cdays-namespace-poc/pkg/apis/control/v1alpha1"
+	syncv1alpha1 "github.com/vshn/espejo/pkg/apis/sync/v1alpha1"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
@@ -51,11 +52,33 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
-	// Watch for changes to namespaces and requeue the owner ManagedNamespace
+	// Watch for changes to Namespaces and SyncConfigs to requeue the owner ManagedNamespace
 	err = c.Watch(&source.Kind{Type: &corev1.Namespace{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
 		OwnerType:    &controlv1alpha1.ManagedNamespace{},
 	})
+	if err != nil {
+		return err
+	}
+
+	err = c.Watch(&source.Kind{Type: &syncv1alpha1.SyncConfig{}}, &handler.EnqueueRequestsFromMapFunc{
+		ToRequests: handler.ToRequestsFunc(func(mapObj handler.MapObject) []reconcile.Request {
+			mnsList := &controlv1alpha1.ManagedNamespaceList{}
+			if err := mgr.GetClient().List(context.TODO(), &client.ListOptions{Namespace: mapObj.Meta.GetNamespace()}, mnsList); err != nil || len(mnsList.Items) == 0 {
+				log.Error(err, "Failed to get ManagedNamespace for SyncConfig", "SyncConfig.Namespace", mapObj.Meta.GetNamespace(), "SyncConfig.Name", mapObj.Meta.GetName())
+				return []reconcile.Request{}
+			}
+			return []reconcile.Request{
+				{
+					NamespacedName: types.NamespacedName{
+						Name:      mnsList.Items[0].Name,
+						Namespace: mnsList.Items[0].Namespace,
+					},
+				},
+			}
+		}),
+	})
+
 	if err != nil {
 		return err
 	}
@@ -99,9 +122,7 @@ func (r *ReconcileManagedNamespace) Reconcile(request reconcile.Request) (reconc
 
 	err = r.handle(ctx, instance, request, reqLogger)
 
-	result := reconcile.Result{
-		RequeueAfter: 10 * time.Second,
-	}
+	result := reconcile.Result{}
 
 	return result, err
 }
