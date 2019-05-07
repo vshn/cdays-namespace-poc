@@ -4,8 +4,8 @@
 [[projects]]
   name = "cloud.google.com/go"
   packages = ["compute/metadata"]
-  revision = "fcb9a2d5f791d07be64506ab54434de65989d370"
-  version = "v0.37.4"
+  revision = "8c41231e01b2085512d98153bcffb847ff9b4b9f"
+  version = "v0.38.0"
 
 [[projects]]
   name = "contrib.go.opencensus.io/exporter/ocagent"
@@ -223,7 +223,7 @@
     "openstack/utils",
     "pagination"
   ]
-  revision = "60507118a582789eaa9c8dcefc1374c7f5431b9b"
+  revision = "e0311c0920d47879e99ac9826142bc097eacd5b7"
 
 [[projects]]
   branch = "master"
@@ -399,6 +399,12 @@
   version = "v1.0.3"
 
 [[projects]]
+  name = "github.com/vshn/espejo"
+  packages = ["pkg/apis/sync/v1alpha1"]
+  revision = "9e3f8d7432a611a62d7a18c65b0673fa23f5263a"
+  version = "v0.0.3"
+
+[[projects]]
   name = "go.opencensus.io"
   packages = [
     ".",
@@ -426,8 +432,8 @@
 [[projects]]
   name = "go.uber.org/atomic"
   packages = ["."]
-  revision = "1ea20fb1cbb1cc08cbd0d913a96dead89aa18289"
-  version = "v1.3.2"
+  revision = "df976f2515e274675050de7b3f42545de80594fd"
+  version = "v1.4.0"
 
 [[projects]]
   name = "go.uber.org/multierr"
@@ -872,15 +878,26 @@
     "pkg/client",
     "pkg/client/apiutil",
     "pkg/client/config",
+    "pkg/controller",
+    "pkg/controller/controllerutil",
+    "pkg/event",
+    "pkg/handler",
+    "pkg/internal/controller",
+    "pkg/internal/controller/metrics",
     "pkg/internal/recorder",
     "pkg/leaderelection",
     "pkg/manager",
     "pkg/metrics",
     "pkg/patch",
+    "pkg/predicate",
+    "pkg/reconcile",
     "pkg/recorder",
     "pkg/runtime/inject",
     "pkg/runtime/log",
+    "pkg/runtime/scheme",
     "pkg/runtime/signals",
+    "pkg/source",
+    "pkg/source/internal",
     "pkg/webhook/admission",
     "pkg/webhook/admission/types",
     "pkg/webhook/internal/metrics",
@@ -911,6 +928,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8bc88accb6b977444e189022696491ac24fd5e25c4ea2ebb4b2b573a42d5416f"
+  inputs-digest = "378e315bf6a831af8161a1d9503c22337cc5043ba7cdbdcf3d1e6194d818d522"
   solver-name = "gps-cdcl"
   solver-version = 1

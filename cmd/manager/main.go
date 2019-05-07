@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"time"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -25,6 +26,9 @@ import (
 	"github.com/operator-framework/operator-sdk/pkg/metrics"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
 	"github.com/spf13/pflag"
+	syncApis "github.com/vshn/espejo/pkg/apis"
+	corev1 "k8s.io/api/core/v1"
+	apiruntime "k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
@@ -89,10 +93,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	syncInterval := time.Duration(100 * time.Minute)
+	scheme := apiruntime.NewScheme()
+	syncApis.AddToSchemes.AddToScheme(scheme)
+	apis.AddToScheme(scheme)
+	corev1.AddToScheme(scheme)
+
 	// Create a new Cmd to provide shared dependencies and start components
 	mgr, err := manager.New(cfg, manager.Options{
 		Namespace:          namespace,
 		MetricsBindAddress: fmt.Sprintf("%s:%d", metricsHost, metricsPort),
+		SyncPeriod:         &syncInterval,
+		Scheme:             scheme,
 	})
 	if err != nil {
 		log.Error(err, "")
